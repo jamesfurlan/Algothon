@@ -1,6 +1,6 @@
 from enum import Enum
 
 class WeightType(Enum):
-    FLAT = 1
-    LINEAR = 2
-    EXPONENTIAL = 3
+    EXPONENTIAL = 1
+    FLAT = 2
+    LINEAR = 3

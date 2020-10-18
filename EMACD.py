@@ -1,33 +1,55 @@
 import pandas as pd
 import numpy as np
 import math
+from weightType import WeightType
 
 
 data = pd.read_csv('data.csv')
 
 
-def exponentialMovingAverage(expFactor, shortTermLength, LongTermLength):
-    shortTermWeights = []
-    longTermWeights = []
+
+
+def exponentialWeights(factor, length):
+    weights = []
+    for i in range(0, length):
+        weights.append(math.exp(factor * i))
+    weightSum = sum(weights)
+    weights = map(weights[i] / weightSum, weights)
+    return weights
+
+def linearWeights(factor, length):
+    weights = []
+    for i in range(0, length):
+        weights.append(factor * i)
+    weightSum = sum(weights)
+    weights = map(weights[i] / weightSum, weights)
+    return weights
+
+
+
+def flatWeights(length):
+    weights = []
+    for i in range(0, length):
+        weights.append(1 / length)
+    return weights
+
+
+def movingAverage(factor, shortTermLength, LongTermLength, weightType):
+    if (weightType == WeightType.EXPONENTIAL):
+        shortTermWeights = exponentialWeights(factor, shortTermLength)
+        longTermWeights = exponentialWeights(factor, LongTermLength)
+    elif (weightType == WeightType.FLAT):
+        shortTermWeights = flatWeights(shortTermLength)
+        longTermWeights = flatWeights(LongTermLength)
+    elif (weightType == WeightType.LINEAR):
+        shortTermWeights = linearWeights(factor, shortTermLength)
+        longTermWeights = linearWeights(factor, LongTermLength)
 
     workingCapital = 1000000
     cashAvailable = workingCapital
 
     shortMovingAverage = 0
     longMovingAverage = 0
-
-    for i in range(0, LongTermLength):
-        if( i < shortTermLength):
-            shortTermWeights.append(math.exp(expFactor * i))
-        longTermWeights.append(math.exp(expFactor * i))
-
-    shortTermTotalWeight = sum(shortTermWeights)
-    longTermTotalWeight = sum(longTermWeights)
-
-    for i in range(0, LongTermLength):
-        if( i < shortTermLength):
-            shortTermWeights[i] = (shortTermWeights[i] / shortTermTotalWeight)
-        longTermWeights[i] = (longTermWeights[i] / longTermTotalWeight)
 
 
     prices = data['Price'].to_list()

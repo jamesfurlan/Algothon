@@ -5,12 +5,13 @@ import pandas as pd
 df = pd.DataFrame()
 
 
-startDate = '2010-01-01'
+startDate = '2015-01-01'
 endDate = '2020-09-30'
 # startDate = '2016-06-15'
 # endDate = '2020-09-30'
 
 df['Price'] = web.DataReader('SPY', data_source='yahoo', start=startDate, end=endDate)['Close']
+df['Volume'] = web.DataReader('SPY', data_source='yahoo', start=startDate, end=endDate)['Volume']
 
 i = 1
 pct_change = [0]
@@ -20,4 +21,4 @@ while i < len(df['Price'].to_list()):
 
 df['pct_change'] = pct_change
 
-df.to_csv('2010-2020.csv')
+df.to_csv('2015-2020-withVolume.csv')
